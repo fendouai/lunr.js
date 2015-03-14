@@ -18,6 +18,9 @@
     "phantomjs": "1.8.1-3",
     "uglify-js": "2.4.13"
   },
+  "dependencies": {
+    "node-segment": "*"
+  },
   "scripts": {
     "test": "make test"
   }
