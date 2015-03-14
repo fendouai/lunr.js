@@ -176,6 +176,14 @@ lunr.EventEmitter.prototype.hasHandler = function (name) {
  * @param {String} obj The string to convert into tokens
  * @returns {Array}
  */
+
+//nandy007 mdf use node-segment
+// 载入模块
+var Segment = require('node-segment').Segment;
+// 创建实例
+var segment = new Segment();
+// 使用默认的识别模块及字典，载入字典文件需要1秒，仅初始化时执行一次即可
+segment.useDefault();
 lunr.tokenizer = function (obj) {
   if (!arguments.length || obj == null || obj == undefined) return []
   if (Array.isArray(obj)) return obj.map(function (t) { return t.toLowerCase() })
@@ -188,7 +196,12 @@ lunr.tokenizer = function (obj) {
       break
     }
   }
-
+  //nandy007 mdf
+  var wordList = segment.doSegment(str);
+  return wordList.map(function (token) {
+      return token.w.toLowerCase()
+  })
+  /*
   return str
     .split(/(?:\s+|\-)/)
     .filter(function (token) {
@@ -197,6 +210,7 @@ lunr.tokenizer = function (obj) {
     .map(function (token) {
       return token.toLowerCase()
     })
+    */
 }
 /*!
  * lunr.Pipeline
@@ -1680,9 +1694,9 @@ lunr.Pipeline.registerFunction(lunr.stopWordFilter, 'stopWordFilter')
  * @see lunr.Pipeline
  */
 lunr.trimmer = function (token) {
-  return token
-    .replace(/^\W+/, '')
-    .replace(/\W+$/, '')
+  return token.replace(/^\s+/, '').replace(/^\s+/, '');//nandy007 mdf
+    //.replace(/^\W+/, '')
+    //.replace(/\W+$/, '')
 }
 
 lunr.Pipeline.registerFunction(lunr.trimmer, 'trimmer')
